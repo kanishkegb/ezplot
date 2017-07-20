@@ -1,6 +1,7 @@
+from __future__ import print_function
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
 import pdb
 
 class SubPlot:
@@ -36,13 +37,18 @@ class SubPlot:
             print('ezplot error: subplot index must be an integer.')
             return
 
-        if subplot_number_r >= self.rows:
-            print('ezplot error: subplot row index must be less than max row')
-            return
+        if self.line_mode:
+            if subplot_number_c >= self.max_ax:
+                print('ezplot error: subplot index must be less than max columns or rows')
+                return
+        else:
+            if subplot_number_r >= self.rows:
+                print('ezplot error: subplot row index must be less than max row')
+                return
 
-        if subplot_number_c >= self.cols:
-            print('ezplot error: subplot column index must be less than max columns')
-            return
+            if subplot_number_c >= self.cols:
+                print('ezplot error: subplot column index must be less than max columns')
+                return
 
         if subplot_number_c < 0 or subplot_number_r < 0:
             print('ezplot error: subplot indices must be a positive integers.')
@@ -61,8 +67,8 @@ class SubPlot:
         return
 
 
-    def ez_plot(self, x, y, params=None):
-        # params = ('r', linewidth=2)
+    def plot(self, x, y, params=None):
+        params = "'r', linewidth=2"
 
         if self.line_mode:
             line = self.ax[self.ax_no].plot(x[:], y[:])
