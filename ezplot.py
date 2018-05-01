@@ -8,13 +8,16 @@ import pdb
 
 def plot(*args, **kwargs):
 
+    plt.figure()
     mode, x, y = select_mode(*args)
-    # pdb.set_trace()
     print(mode)
     if mode=='single':
-        plt.plot(x[0])
-
+        plt.plot(x[0], **kwargs)
+    elif mode=='xy':
+        for i in range(len(x)):
+            plt.plot(x[i], y[i], **kwargs)
     return
+
 
 def select_mode(*args):
 
@@ -27,7 +30,7 @@ def select_mode(*args):
             if not len_x==len_y:
                 raise ValueError('each (x, y) must have same lengths\n'
                 'for pair {}, the length of x is {}, but the length of y is '
-                '{}'.format(i, len(x)))
+                '{}'.format(i % 2, len_x, len_y))
             all_y.append(arg)
         else:
             len_x = len(arg)
@@ -39,7 +42,8 @@ def select_mode(*args):
         return 'single', all_x, all_y
     elif not i % 2:
         raise ValueError('data must be in the format (x1, y1, x2, y2, ...)')
-
+    else:
+        mode = 'xy'
 
     return mode, all_x, all_y
 
@@ -47,6 +51,9 @@ def select_mode(*args):
 if __name__ == "__main__":
 
     x = np.arange(0, 10)
-    # plot(x, 2*x, 3*x, x)
-    plot(x)
+    pdb.set_trace()
+
+    # plot(x, 2*x, 3*x, x, linestyle='dashed')
+    plot(x, color='green')
+    # plot(np.array([[x], [2*x]]), color='green')
     plt.show()
