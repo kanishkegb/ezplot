@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import itertools
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,14 +9,22 @@ import pdb
 
 def plot(*args, **kwargs):
 
-    plt.figure()
-    mode, x, y = select_mode(*args)
+    x, y, mode, num_subplots = select_mode(*args)
     print(mode)
     if mode=='single':
+        plt.figure()
         plt.plot(x[0], **kwargs)
     elif mode=='xy':
-        for i in range(len(x)):
-            plt.plot(x[i], y[i], **kwargs)
+        if not num_subplots:
+            plt.figure()
+            for i in range(len(x)):
+                plt.plot(x[i], y[i], **kwargs)
+        else:
+            m, n = num_subplots
+            fig, ax = plt.subplots(m, n)
+            for i, j in list(itertools.product(range(len(x)), range(m))):
+                ax[j].plot(x[i], y[i][j], **kwargs)
+
     return
 
 
@@ -27,10 +36,10 @@ def select_mode(*args):
     for i, arg in enumerate(args):
         if i % 2:
             len_y = len(arg)
-            if not len_x==len_y:
-                raise ValueError('each (x, y) must have same lengths\n'
-                'for pair {}, the length of x is {}, but the length of y is '
-                '{}'.format(i % 2, len_x, len_y))
+            # if not len_x==len_y:
+            #     raise ValueError('each (x, y) must have same lengths\n'
+            #     'for pair {}, the length of x is {}, but the length of y is '
+            #     '{}'.format(i % 2, len_x, len_y))
             all_y.append(arg)
         else:
             len_x = len(arg)
@@ -39,21 +48,29 @@ def select_mode(*args):
         mode = 'unknown'
 
     if i==0:
-        return 'single', all_x, all_y
+        try:
+            m, n = np.shape(all_x[0])
+            num_subplots = min([m, n])
+            return all_x, all_y, 'single', (num_subplots, 1)
+        except ValueError:
+            return all_x, all_y, 'single', 0
+
+
     elif not i % 2:
         raise ValueError('data must be in the format (x1, y1, x2, y2, ...)')
     else:
         mode = 'xy'
+        m, n = np.shape(all_y[0])
+        num_subplots = min([m, n])
 
-    return mode, all_x, all_y
+    return all_x, all_y, mode, (num_subplots, 1)
 
 
 if __name__ == "__main__":
 
     x = np.arange(0, 10)
-    pdb.set_trace()
 
     # plot(x, 2*x, 3*x, x, linestyle='dashed')
-    plot(x, color='green')
-    # plot(np.array([[x], [2*x]]), color='green')
+    # plot(x, color='green')
+    plot(x, np.array([x, 2*x]), color='green')
     plt.show()
