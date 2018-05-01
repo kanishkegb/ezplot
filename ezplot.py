@@ -2,77 +2,43 @@ from __future__ import print_function
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 import pdb
 
-class SubPlot:
-    ''' subplot class '''
 
+def plot(*args, **kwargs):
 
-    def __init__(self, rows, cols):
+    mode, x, y = select_mode(*args)
+    # pdb.set_trace()
+    print(mode)
+    if mode=='single':
+        plt.plot(x[0])
 
-        if not isinstance(rows, int):
-            print('ezplot error: Number of subplot rows must be an integer.')
-            return
+    return
 
-        if not isinstance(cols, int):
-            print('ezplot error: Number of subplot columns must be an integer.')
-            return
+def select_mode(*args):
 
-        self.rows = rows
-        self.cols = cols
-        self.max_ax = rows * cols
-
-        self.line_mode = 0
-        if rows==1 or cols==1:
-            self.line_mode = 1
-
-        self.fig, self.ax = plt.subplots(rows, cols)
-
-        return
-
-
-    def subplot(self, subplot_number_r, subplot_number_c=0):
-
-        if not isinstance(subplot_number_r, int) or not isinstance(subplot_number_c, int):
-            print('ezplot error: subplot index must be an integer.')
-            return
-
-        if self.line_mode:
-            if subplot_number_c >= self.max_ax:
-                print('ezplot error: subplot index must be less than max columns or rows')
-                return
+    all_x = []
+    all_y = []
+    for i, arg in enumerate(args):
+        if i % 2:
+            all_y.append(arg)
         else:
-            if subplot_number_r >= self.rows:
-                print('ezplot error: subplot row index must be less than max row')
-                return
+            all_x.append(arg)
 
-            if subplot_number_c >= self.cols:
-                print('ezplot error: subplot column index must be less than max columns')
-                return
+        mode = 'unknown'
 
-        if subplot_number_c < 0 or subplot_number_r < 0:
-            print('ezplot error: subplot indices must be a positive integers.')
-            return
-
-        if self.line_mode:
-            self.ax_no = subplot_number_r
-        else:
-            self.ax_no = (subplot_number_r, subplot_number_c)
-
-        return
+    if i==0:
+        return 'single', all_x, all_y
+    elif not i % 2:
+        raise ValueError('data must be in the format (x1, y1, x2, y2, ...)')
 
 
-    def suptitle(self, title):
-        self.fig.suptitle(title, fontsize=12)
-        return
+    return mode, all_x, all_y
 
+if __name__ == "__main__":
 
-    def plot(self, x, y, params=None):
-        params = "'r', linewidth=2"
-
-        if self.line_mode:
-            line = self.ax[self.ax_no].plot(x[:], y[:])
-        else:
-            line = self.ax[self.ax_no].plot(x[:], y[:])
-
-        return
+    x = np.arange(0, 10)
+    # plot(x, 2*x, 3*x, x)
+    plot(x)
+    plt.show()
