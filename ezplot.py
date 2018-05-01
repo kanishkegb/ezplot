@@ -20,10 +20,17 @@ def select_mode(*args):
 
     all_x = []
     all_y = []
+    len_x = 0
     for i, arg in enumerate(args):
         if i % 2:
+            len_y = len(arg)
+            if not len_x==len_y:
+                raise ValueError('each (x, y) must have same lengths\n'
+                'for pair {}, the length of x is {}, but the length of y is '
+                '{}'.format(i, len(x)))
             all_y.append(arg)
         else:
+            len_x = len(arg)
             all_x.append(arg)
 
         mode = 'unknown'
@@ -35,6 +42,7 @@ def select_mode(*args):
 
 
     return mode, all_x, all_y
+
 
 if __name__ == "__main__":
 
