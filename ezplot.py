@@ -24,16 +24,17 @@ def plot(*args, **kwargs):
     m, n = num_subplots
     print('m: {}, n: {}'.format(m, n))
     fig, axes = plt.subplots(m, n)
-    for i, j in list(itertools.product(range(len(y)), range(m))):
+    for i, j in list(itertools.product(range(len(y)), range(m*n))):
         print('{}, {}'.format(i, j))
         try:
             ax = axes[j]
         except TypeError:
             ax = axes
-            if len(y)==1:
+            if len(y)==1 and m==1:
+                print(1)
                 y = [y]
-            # pdb.set_trace()
-            ax.plot(x[i], y[i][j], **kwargs)
+        # pdb.set_trace()
+        ax.plot(x[i], y[i][j], **kwargs)
 
     return
 
@@ -72,7 +73,7 @@ def select_mode(*args):
                 all_x.append(arg)
 
     if i==0:
-        return [np.arange(0, num_data_points)], all_x, (1, 1)
+        return [np.arange(0, num_data_points)], all_x, (m, 1)
 
 
     elif not i % 2:
@@ -110,5 +111,6 @@ if __name__ == "__main__":
     plot(x, color='green')
     # plot(x, np.array([x, 2*x]), color='green')
     # plot(np.array([x, 2*x]), color='green')
+    plot(np.random.rand(2, 10), color='green')
     # pdb.set_trace()
     plt.show()
