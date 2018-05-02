@@ -12,15 +12,15 @@ def plot(*args, **kwargs):
 
     x, y, num_subplots = select_mode(*args)
     m, n = num_subplots
-    fig, axes = plt.subplots(m, n)
+
+    fig = plt.figure()
     for i, j in list(itertools.product(range(len(y)), range(m*n))):
-        print(j)
-        pdb.set_trace()
+        # pdb.set_trace()
         try:
-            ax = axes[j]
+            ax = plt.subplot(m, n, j+1)
         except TypeError:
-            ax = axes
-        ax.plot(x[i][j, :], y[i][j, :], **kwargs)
+            pass
+        plt.plot(x[i][j, :], y[i][j, :], **kwargs)
 
     return
 
@@ -71,9 +71,7 @@ def select_mode(*args):
                 all_x.append(arg)
 
     x, y = clean_xy(all_x, all_y)
-    print(m)
     n_rows, n_cols = get_subplot_dims(m)
-    print(str(n_rows) + ' ' + str(n_cols))
 
     return x, y, (n_rows, n_cols)
 
@@ -136,8 +134,8 @@ def get_subplot_dims(m):
         n_rows = 3
         n_cols = 3
     else:
-        n_rows = 1
-        n_cols = m
+        n_rows = m
+        n_cols = 1
 
     return n_rows, n_cols
 
@@ -156,11 +154,11 @@ if __name__ == "__main__":
 
     x = np.arange(0, 10)
 
-    # plot(x, 2*x, 3*x, x, linestyle='dashed')
-    # plot(x, color='black')
-    # plot(x, np.array([x, 2*x]), color='green')
-    # plot(np.array([x, 2*x]), color='red')
-    # plot(np.random.rand(2, 10), color='blue')
+    plot(x, 2*x, 3*x, x, linestyle='dashed')
+    plot(x, color='black')
+    plot(x, np.array([x, 2*x]), color='green')
+    plot(np.array([x, 2*x]), color='red')
+    plot(np.random.rand(2, 10), color='blue')
     plot(np.random.rand(9, 10))
     # pdb.set_trace()
     plt.show()
