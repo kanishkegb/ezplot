@@ -1,4 +1,5 @@
 from __future__ import print_function
+from mpl_toolkits.mplot3d import Axes3D
 
 import copy
 import itertools
@@ -10,17 +11,31 @@ import pdb
 
 def plot(*args, **kwargs):
 
-    x, y, num_subplots = select_mode(*args)
-    m, n = num_subplots
 
-    fig = plt.figure()
-    for i, j in list(itertools.product(range(len(y)), range(m*n))):
-        # pdb.set_trace()
-        try:
-            ax = plt.subplot(m, n, j+1)
-        except TypeError:
-            pass
-        plt.plot(x[i][j, :], y[i][j, :], **kwargs)
+    mode = None
+    for key, value in kwargs.items():
+        if key == 'mode':
+            mode = value
+
+    if mode == None:
+        x, y, num_subplots = select_mode(*args)
+        m, n = num_subplots
+
+        fig = plt.figure()
+        for i, j in list(itertools.product(range(len(y)), range(m*n))):
+            # pdb.set_trace()
+            try:
+                ax = plt.subplot(m, n, j+1)
+            except TypeError:
+                pass
+            plt.plot(x[i][j, :], y[i][j, :], **kwargs)
+
+    elif mode == '3d':
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+
+        ax.plot(args[0], args[1], args[2])
+        ax.axis('equal')
 
     return
 
@@ -118,8 +133,6 @@ def clean_xy(all_x, all_y):
                 x[i][ax, :] = data_series
 
     return x, y
-
-
 
 
 def get_subplot_dims(m):
