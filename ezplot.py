@@ -11,24 +11,31 @@ import pdb
 
 def plot(*args, **kwargs):
 
-
+    plot_kwargs = {}
     mode = None
+    title = ''
+
     for key, value in kwargs.items():
         if key == 'mode':
             mode = value
+        elif key == 'title':
+            title = value
+        else:
+            plot_kwargs[key] = value
 
     if mode == None:
         x, y, num_subplots = select_mode(*args)
         m, n = num_subplots
 
         fig = plt.figure()
+
         for i, j in list(itertools.product(range(len(y)), range(m*n))):
             # pdb.set_trace()
             try:
                 ax = plt.subplot(m, n, j+1)
             except TypeError:
                 pass
-            plt.plot(x[i][j, :], y[i][j, :], **kwargs)
+            plt.plot(x[i][j, :], y[i][j, :], **plot_kwargs)
 
     elif mode == '3d':
         fig = plt.figure()
@@ -36,6 +43,9 @@ def plot(*args, **kwargs):
 
         ax.plot(args[0], args[1], args[2])
         ax.axis('equal')
+
+
+    plt.suptitle(title)
 
     return
 
