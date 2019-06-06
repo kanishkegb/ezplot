@@ -14,12 +14,19 @@ def plot(*args, **kwargs):
     plot_kwargs = {}
     mode = None
     title = ''
+    legend_on = False
 
     for key, value in kwargs.items():
         if key == 'mode':
             mode = value
         elif key == 'title':
             title = value
+        elif key == 'label':
+            legend_on = True
+            legends = value
+        elif key == 'legend':
+            legend_on = True
+            legends = value
         else:
             plot_kwargs[key] = value
 
@@ -35,7 +42,15 @@ def plot(*args, **kwargs):
                 ax = plt.subplot(m, n, j+1)
             except TypeError:
                 pass
-            plt.plot(x[i][j, :], y[i][j, :], **plot_kwargs)
+            
+            if legend_on:
+                plt.plot(x[i][j, :], y[i][j, :], label=legends[i], \
+                    **plot_kwargs)
+            else:
+                plt.plot(x[i][j, :], y[i][j, :], **plot_kwargs)
+        
+        if legend_on:
+            plt.legend()
 
     elif mode == '3d':
         fig = plt.figure()
