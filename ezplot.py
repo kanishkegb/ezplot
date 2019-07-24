@@ -15,6 +15,7 @@ def plot(*args, **kwargs):
     mode = None
     title = ''
     legend_on = False
+    fig_size = (0, 0)
 
     for key, value in kwargs.items():
         if key == 'mode':
@@ -27,6 +28,8 @@ def plot(*args, **kwargs):
         elif key == 'legend':
             legend_on = True
             legends = value
+        elif key == 'figsize':
+            fig_size = value
         else:
             plot_kwargs[key] = value
 
@@ -34,7 +37,10 @@ def plot(*args, **kwargs):
         x, y, num_subplots = select_mode(*args)
         m, n = num_subplots
 
-        fig = plt.figure()
+        if fig_size[0] == 0:
+            fig = plt.figure()
+        else:
+            fig = plt.figure(figsize=fig_size)
 
         for i, j in list(itertools.product(range(len(y)), range(m*n))):
             # pdb.set_trace()
